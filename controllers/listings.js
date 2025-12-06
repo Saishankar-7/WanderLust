@@ -1,7 +1,19 @@
 const Listing=require("../models/listing.js");
 const geocodeLocation = require("../geocoding.js"); // adjust path as needed;
 module.exports.index=async(req,res)=>{
-    let allistings=await Listing.find({});
+    const { q } = req.query;
+    let filter = {};
+    if (q) {
+        filter = {
+            $or: [
+                { title: { $regex: q, $options: 'i' } },
+                { location: { $regex: q, $options: 'i' } },
+                { country: { $regex: q, $options: 'i' } },
+                { description: { $regex: q, $options: 'i' } }
+            ]
+        };
+    }
+    let allistings=await Listing.find(filter);
     res.render("listings/index.ejs",{allistings});
 };
 
