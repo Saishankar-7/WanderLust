@@ -20,6 +20,8 @@ const LocalStrategy=require("passport-local");
 const listingRouter=require("./routes/listings.js");
 const reviewRouter=require("./routes/review.js");
 const userRouter=require("./routes/user.js");
+const wrapAsync = require("./utils/wrapAsync.js");
+const listingController = require("./controllers/listings.js");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
@@ -79,6 +81,9 @@ app.use((req,res,next)=>{
 app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
+
+// Show listings on the root path
+app.get('/', wrapAsync(listingController.index));
 
 
 
